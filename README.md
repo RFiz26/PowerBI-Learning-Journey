@@ -16,6 +16,7 @@ W plikach **LOG:** spisuję konkretne przypadki (tzw. "bugi"), które udało mi 
 * **Power Query** – tu sprzątam bałagan w danych.
 * **GitHub** – tu trzymam porządek w notatkach.
 * **Python**- mój pomocnik przy danych: szybkie generowanie wykresów oraz testy statystyczne (chi-kwadrat, t-Studenta, Manna-Whitneya, ANOVA, Kruskala-Wallisa, testy post hoc, analiza PCA itp.)
+* **SQL**- przefiltrowanie i zagregowanie danych, aby przyspieszyć pracę oraz działanie Power BI (tzw. Query Folding)
 
 
 ---
