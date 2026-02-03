@@ -4,8 +4,11 @@ Najlepiej uczę się, tworząc projekty i na bieżąco rozwiązując problemy. P
 
 ### Czego się tutaj nauczysz (razem ze mną)?
 W plikach **LOG:** spisuję konkretne przypadki (tzw. "bugi"), które udało mi się pokonać. Znajdziesz tam m.in.:
+
 *Jak nie polec na formatowaniu dat i kropek w liczbach (ustawienia regionalne). **Przygotowanie i wprowadzenie danych (ETL)**
+
 *Jak sprawdzić, czy dane są "brudne" przed robieniem wykresów (profilowanie danych).**Przygotowanie i wprowadzenie danych (ETL)**
+
 *Moje autorskie notatki z DAX.
 
 ### 🛠️ Moje narzędzia:
