@@ -1,11 +1,17 @@
-Problem 1:
-Problem: Dane wejściowe używały kropki jako separatora, co skutkowało błędem DataFormat.Error przy zmiane formatu z tekstu na liczby całkowite w Power Query.
+## [2024-05-22] Rozwiązanie problemu z separatorem dziesiętnym
 
-Próba 1: Bezpośrednia zmiana typu na "Liczba dziesiętna" powodowała błąd DataFormat.Error, ponieważ program nie potrafił zinterpretować kropki wewnątrz liczby.
-Próba 2: Ręczna zmiana kropek na przecinki w notatniku ( dużo dodatkowej roboty)
+**Problem:** Kolumna z wartościami dziesiętnymi była rozpoznawana jako tekst z powodu kropki (format US), co uniemożliwiało obliczenia w Power BI (ustawienia PL).
 
-Rozwiązanie: Zastosowałam funkcję Zmień typ z użyciem ustawień regionalnych (Change Type using Locale).
-<img width="836" height="765" alt="image" src="https://github.com/user-attachments/assets/47bfcd13-bda3-476c-8399-47c94f1edac3" />
-<img width="693" height="349" alt="image" src="https://github.com/user-attachments/assets/e62854a0-63ed-473d-af1a-0b35ba882c6e" />
+**Rozwiązanie:** Zamiast ręcznej zamiany znaków, użyłam funkcji: 
+`Zmień typ` -> `Użyj ustawień regionalnych` -> `Angielski (Stany Zjednoczone)`.
+<img width="1711" height="833" alt="image" src="https://github.com/user-attachments/assets/31521e2d-5bf5-4478-a97e-26f42296791c" />
+
+
+
+**Kod M (Power Query):**
+```powerquery
+#"Zmieniono typ z ustawieniami regionalnymi" = Table.TransformColumnTypes(#"Changed Type", {{"Physical_Activity", type number}}, "en-US")
+
+
 
 
