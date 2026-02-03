@@ -25,4 +25,15 @@
 
 <img width="1491" height="987" alt="image" src="https://github.com/user-attachments/assets/9d41d2ba-27f3-4443-94b8-c10decf65f7b" />
 
+## [2024-05-22] Załadowanie danych z Google BigQuery
 
+**Problem** Podczas próby ściągnięcia danych z systemu Google BigQuery (Pobierz dane->Więcej...->Google BigQuery-> Połącz) pojawił się problem
+<img width="975" height="609" alt="image" src="https://github.com/user-attachments/assets/91f7e60d-cd13-40e8-b74b-2d4f9cc4b0b2" />
+**Próba 1** Zainstalowanie 64-bitowowego sterownika ODBC dla BigQuery.
+    **Rezultat** Błąd dalej występował
+**Próba 2** Wyłączenie Google BigQuery Storage API (Sugestia Google Gemini)
+  Plik -> Opcje i ustawienia -> Opcje
+<img width="1001" height="800" alt="image" src="https://github.com/user-attachments/assets/405c11a4-a1eb-42db-846d-02e76faed85e" />
+<img width="998" height="793" alt="image" src="https://github.com/user-attachments/assets/45644cd1-fd58-40ef-a590-9df7fd121658" />
+
+  **Rezultat** Problem zniknął, dane zostały załadowane
