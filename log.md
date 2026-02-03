@@ -20,8 +20,15 @@
 
 **Użyte funkcje:**
 * **Jakość kolumn (Column Quality):** Pozwala szybko sprawdzić procent danych prawidłowych (Valid), błędów (Errors) oraz pustych (Empty).
-* **Rozkład kolumn (Column Distribution):** Wyświetla wykres słupkowy pokazujący liczbę **unikatowych** (Unique) (liczba elementów które wystąpiły tylko raz) i **odrębnych** (Distinct) ( liczba elemetnów które wystąpiły chociaż raz) wartości w kolumnie. Pomaga wykryć anomalie w ID lub kategoriach. (**Jeżeli Unique=Distinct <- nie ma dublikatów**)
+* **Rozkład kolumn (Column Distribution):** Wyświetla wykres słupkowy pokazujący liczbę **unikatowych** (Unique) i **odrębnych** (Distinct)  wartości w kolumnie. (**Jeżeli Unique=Distinct <- nie ma dublikatów**)
 * **Profil kolumn (Column Profile):** Wyświetla szczegółowe statystyki (Minimum, Maximum, Średnia, Odchylenie standardowe) oraz histogram dla zaznaczonej kolumny. <- tutaj można popatrzeć na **ekstrema** czy mają sens
+### Kluczowe pojęcia (Data Profiling):
+W sekcji "Rozkład kolumn" Power BI podaje dwie wartości, które łatwo pomylić:
+
+| Pojęcie | Definicja | Przykład `[1, 1, 2, 3]` |
+| :--- | :--- | :--- |
+| **Odrębne (Distinct)** | Wszystkie różne wartości (każda liczona raz). | **3** (wartości: 1, 2, 3) |
+| **Unikatowe (Unique)** | Wartości, które wystąpiły tylko jeden jedyny raz. | **2** (wartości: 2, 3) |
 
 <img width="1491" height="987" alt="image" src="https://github.com/user-attachments/assets/9d41d2ba-27f3-4443-94b8-c10decf65f7b" />
 
