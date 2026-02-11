@@ -1,4 +1,4 @@
-#Modele danych – Schemat Gwiazdy
+# (I) Modele danych – Schemat Gwiazdy
 
 Modele danych to zbiór tabel, które są powiązane między sobą i tworzą **mapy powiązań**. 
 
@@ -19,11 +19,11 @@ Stanowią "ramiona" modelu. Odpowiadają na pytania: *Kto? Co kupił? Gdzie? Kie
 
 ---
 
-## Dlaczego to ważne?
-> **Power BI jest zoptymalizowany pod ten układ.** Dzięki niemu raporty działają szybciej, a miary DAX są prostsze do napisania.
+## **Power BI jest zoptymalizowany pod ten układ.**
 
+---
 ### Kluczowe zasady:
-1. **Relacja 1:* (Jeden do Wielu):** Filtr zawsze płynie od tabeli wymiaru (strona "1") do tabeli faktów (strona "*").
+1. **Relacja (1:*)(Jeden do Wielu)**  Filtr zawsze płynie od tabeli wymiaru (strona "1") do tabeli faktów (strona "*").
 2. **Unikaj Płatków Śniegu (Snowflake):** To sytuacja, gdzie aby połączyć tabelę faktów z wymiarem, trzeba przejść przez inną tabelę wymiaru. 
-    * *Dobra praktyka:* Lepiej "rozpłaszczyć" dane do jednej szerokiej tabeli wymiaru.
+    * *Dobra praktyka:* Połączyć te tabele wymiarów w jedną ( "rozpłaszczyć") 
 
