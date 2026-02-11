@@ -1,1 +1,29 @@
+# Modele danych – Schemat Gwiazdy
+
+Modele danych to zbiór tabel, które są powiązane między sobą i tworzą **mapy powiązań**. 
+
+## Schemat Gwiazdy (Star Schema)
+Jest to optymalny sposób powiązań tabel, oparty na strukturze, w której jedna centralna tabela jest otoczona przez tabele powiązane.
+
+### 1. Tabela Faktów (Fact Table)
+Jest to centralna tabela w modelu. Zawiera informacje o zdarzeniach, które wystąpiły w czasie.
+* **Zawartość:** Liczby (cena, koszt, ilość) oraz klucze ID służące do powiązań.
+* **Charakterystyka:** Posiada ogromną liczbę wierszy, ale mało kolumn (tzw. tabela "długa i chuda").
+
+
+
+### 2. Tabele Wymiarów (Dimension Tables)
+Stanowią "ramiona" modelu. Odpowiadają na pytania: *Kto? Co kupił? Gdzie? Kiedy? Jak?*
+* **Przykłady:** Kalendarz, opis produktów, dane klientów.
+* **Charakterystyka:** Mają dużo kolumn (opisy), ale znacznie mniej wierszy niż tabela faktów. Każdy element w tabeli wymiarów jest unikalny.
+
+---
+
+## Dlaczego to ważne?
+> **Power BI jest zoptymalizowany pod ten układ.** Dzięki niemu raporty działają szybciej, a miary DAX są prostsze do napisania.
+
+### Kluczowe zasady:
+1. **Relacja 1:* (Jeden do Wielu):** Filtr zawsze płynie od tabeli wymiaru (strona "1") do tabeli faktów (strona "*").
+2. **Unikaj Płatków Śniegu (Snowflake):** To sytuacja, gdzie aby połączyć tabelę faktów z wymiarem, trzeba przejść przez inną tabelę wymiaru. 
+    * *Dobra praktyka:* Lepiej "rozpłaszczyć" dane do jednej szerokiej tabeli wymiaru.
 
