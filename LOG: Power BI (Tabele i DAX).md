@@ -115,3 +115,121 @@ Pokazanie sprzedaży tylko dla kategorii "Elektronika", niezależnie od innych w
 
 > **Ważne:** `CALCULATE` modyfikuje obszar danych (kontekst) przed wykonaniem obliczenia. Dzięki temu jest znacznie szybszy i wydajniejszy niż funkcja `IF` sprawdzająca warunek wiersz po wierszu!
 
+# IV. Tabela CALENDAR
+
+W Power BI dobrą praktyką jest stworzenie dedykowanej tabeli kalendarzowej, która obejmuje cały zakres dat występujących w modelu danych. Pozwala to na poprawną analitykę czasu (**Time Intelligence**).
+
+## Tworzenie tabeli (DAX)
+Korzystając z funkcji `CALENDAR` oraz `ADDCOLUMNS`, możemy dynamicznie wygenerować tabelę na podstawie dat z tabeli źródłowej.
+
+**Przykład kodu:**
+
+```dax
+Calendar_table = 
+VAR start_data = MIN(original_table[Data])
+VAR stop_data = MAX(original_table[Data])
+
+RETURN 
+ADDCOLUMNS(
+    CALENDAR(start_data, stop_data),
+    "Rok",            YEAR([Date]),
+    "Miesiąc_nr",     MONTH([Date]),
+    "Miesiąc",        FORMAT([Date], "MMMM"),
+    "Kwartał",        "K" & FORMAT([Date], "Q"),
+    "Dzień",          DAY([Date]),
+    "Dzień tygodnia", FORMAT([Date], "dddd"),
+    "Rok-miesiąc",    FORMAT([Date], "YYYY-MM")
+)
+```
+## Analiza kodu krok po kroku
+
+### 1. Definicja zmiennych (VAR)
+Zmienne pozwalają na jednorazowe obliczenie wartości i ich wielokrotne użycie w kodzie.
+
+* `VAR start_data = MIN(original_table[Data])`  
+* `VAR stop_data = MAX(original_table[Data])`  
+Wyznaczają one najstarszą (minimalną) oraz najmłodszą (maksymalną) datę w danych źródłowych. Stanowią one ramy czasowe – pierwszy i ostatni dzień Twojego kalendarza.
+
+### 2. Funkcja bazowa CALENDAR
+`CALENDAR(start_data, stop_data)`  
+Ta funkcja tworzy tabelę z jedną kolumną o nazwie **[Date]**. Generuje ona kompletną listę wszystkich dat dzień po dniu, bez żadnych przerw, od wyznaczonej daty startowej do końcowej.
+
+### 3. Rozszerzanie tabeli (ADDCOLUMNS)
+Funkcja `ADDCOLUMNS` przyjmuje naszą listę dat i „dokleja” do niej dodatkowe kolumny zdefiniowane przez użytkownika. Składnia to zawsze: **"Nazwa Kolumny", Formuła**.
+
+* `"Rok", YEAR([Date])` – Wyciąga rok z daty (np. 2023).
+* `"Miesiąc_nr", MONTH([Date])` – Zwraca numer miesiąca (1–12). **Bardzo ważne do poprawnego sortowania nazw miesięcy!**
+* `"Miesiąc", FORMAT([Date], "MMMM")` – Zamienia datę na pełną nazwę miesiąca (np. „Styczeń”).
+* `"Kwartał", "K" & FORMAT([Date], "Q")` – Pobiera numer kwartału i dodaje literę „K” (np. „K1”, „K2”).
+* `"Dzień", DAY([Date])` – Wyciąga numer dnia miesiąca (1–31).
+* `"Dzień tygodnia", FORMAT([Date], "dddd")` – Zwraca pełną nazwę dnia tygodnia (np. „Poniedziałek”).
+* `"Rok-miesiąc", FORMAT([Date], "YYYY-MM")` – Tworzy format tekstowy idealny do osi wykresów, zachowując chronologię.
+
+
+
+## Łączenie z tabelą faktów (Fact Table)
+Tabela `Calendar_table` pełni rolę **tabeli wymiarów** (Dimension Table). Łączymy ją z tabelą faktów relacją **1:* (jeden do wielu)** za pomocą kolumn dat:
+
+* **Z tabeli faktów:** kolumna, która posłużyła jako źródło dla funkcji `MIN`/`MAX` (np. `original_table[Data]`).
+* **Z tabeli Calendar_table:** kolumna `[Date]` (podstawowa kolumna kalendarza).
+
+> [!IMPORTANT]
+> Aby zachować ciągłość okresów na raportach, należy zawsze używać kolumn czasowych z tabeli `Calendar_table`. Tabela faktów może posiadać luki (np. dni wolne, w których nie było sprzedaży), co bez kalendarza mogłoby generować błędy w obliczeniach Time Intelligence.
+
+### **WAŻNE! Problemy z formatem czasu (DateTime)**
+Jeżeli w tabeli głównej data zawiera również godzinę, funkcja `CALENDAR` stworzy kolumnę w formacie `DD-MM-YYYY 00:00:00`. Relacja nie zadziała poprawnie, jeśli godziny w obu tabelach nie będą identyczne (np. sprzedaż o 14:00 nie połączy się z kalendarzem ustawionym na 00:00).
+
+**Rozwiązanie:** W Power Query, w tabeli faktów, należy zmienić typ danych kolumny z „Data/Godzina” na „Data” (sam dzień bez czasu). Dopiero na podstawie tak przygotowanej kolumny należy budować `Calendar_table` i tworzyć relacje.
+
+##. Sortowanie chronologiczne 
+Power BI domyślnie sortuje tekstowe nazwy miesięcy alfabetycznie (np. wrzesień będzie przed styczniem). Aby wykresy wyglądały poprawnie:
+1. Kliknij w kolumnę `Miesiąc` w widoku danych.
+2. Wybierz z górnego menu opcję **Sort by column** (Sortuj według kolumny).
+3. Wybierz kolumnę `Miesiąc_nr`.
+
+
+## Funkcje Analizy Czasu (Time Intelligence)
+
+Dzięki stworzeniu tabeli `Calendar_table` i połączeniu jej z faktami, można używać zaawansowanych funkcji DAX do porównywania okresów.
+
+###  Porównanie do analogicznego okresu rok wcześniej **(SAMEPERIODLASTYEAR)**
+Funkcja ta zwraca zbiór dat przesunięty dokładnie o jeden rok wstecz w stosunku do dat wybranych w filtrze (np. na raporcie).
+
+**Przykład miary:**
+```dax
+Zysk(Last Year) = 
+CALCULATE(
+    [Suma Sprzedaży], 
+    SAMEPERIODLASTYEAR('Calendar_table'[Date])
+)
+```
+### Uniwersalne przesunięcia czasu (DATEADD)
+Do porównania danych innych niż do zeszłego roku, np zaszłego miesiąca czy kwartału stosuje się funkcji ``DATEADD`
+
+**Składnia:**
+
+`DATEADD(<daty>, <liczba_interwałów>, <interwał>)`
+#### Przykład użycia:
+```
+Sprzedaż PM (Previous Month) = 
+CALCULATE(
+    [Suma Sprzedaży], 
+    DATEADD('Calendar_table'[Date], -1, MONTH)
+)
+```
+###  Narastająco od początku roku ***(TOTALYTD)***
+Funkcja oblicza wartość od 1 stycznia danego roku do aktualnie wybranej daty.
+
+**Przykład miary:**
+```Sprzedaż YTD (Year To Date) = 
+TOTALYTD(
+    [Suma Sprzedaży], 
+    'Calendar_table'[Date]
+)
+```
+
+### Oznaczanie jako Tabela Dat
+Aby funkcje takie jak `TOTALYTD` czy `SAMEPERIODLASTYEAR` działały bezbłędnie, należy poinformować Power BI, że ta tabela to Twój główny kalendarz:
+1. Należy kliknac prawym przyciskiem myszy na `Calendar_table` w panelu danych.
+2. Wybrać **Mark as calander table** (Oznacz jako tabelę dat)
+3. Wskaż kolumnę `Date` jako kluczową.
