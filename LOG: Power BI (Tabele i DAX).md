@@ -1,3 +1,8 @@
+# Cel notatki
+Ta notatka to moje uporządkowanie kluczowych zagadnień Power BI i DAX
+w trakcie procesu przebranżowienia na stanowisko Data Analyst / BI Developer.
+Jeżeli są jakieś błędy z czasem będę go aktualizować
+
 # I. Modele danych – Schemat Gwiazdy
 
 Modele danych to zbiór tabel, które są powiązane między sobą i tworzą **mapy powiązań**. 
