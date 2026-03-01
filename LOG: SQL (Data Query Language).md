@@ -57,10 +57,13 @@
     * '%mok%-szuka wszystkich dancyh w kolumnie który zawiera ciag 'mok' (smok,mokradła, domokrązca)
 
     Przykład: `WHERE państwo LIKE 'A%'`
- **UWAGA** Wielkość liter nie powinna mieć znaczenia, ale w niektórych systemach (np. PostgreSQL) będzie to miało znaczenie
+
+  **UWAGA!!** Wielkość liter może mieć znaczenie (MySQL lub SQL Server nie ma). W przypadku **Oracle/SQLite** nalezy zastosowac funkcje **LOWER** lub **UPPER** 
+
+  Przykład: `WHERE LOWER(owoc) LIKE '%jabłko%'`
 
 * **ORDER BY**: Komenda "posortuj". Pozwala ułożyć wyniki:
-    * Domyślnie (A-Z, 1-100): Wystarczy napisać **ORDER BY** kolumna.
+    * Domyślnie (A-Z, 1-100): Wystarczy napisać **ORDER BY** kolumna **ASC**.
     * Odwrotnie (Z-A, 100-1): Należy dopisać DESC na końcu, np. **ORDER BY** cena **DESC**$
 
 * **DISTINCT**: Słowo, które usuwa powtórki z wyników wyszukiwania.
