@@ -51,6 +51,14 @@
 
     Przykład: `WHERE wiek >= 18`
 
+* **LIKE**: Szukanie danych po nie dokładnej nazwie z wykorztsaniem %
+    * 'G%'-szuka wszystkich danych w kolumnie zaczynających się na G (Grzebień, garnek itp.)
+    * '%ów'-szuka wszystkich danych w kolumnie kończących się na ów (Kraków,Gdów)
+    * '%mok%-szuka wszystkich dancyh w kolumnie który zawiera ciag 'mok' (smok,mokradła, domokrązca)
+
+    Przykład: `WHERE państwo LIKE 'A%'`
+
+
 * **ORDER BY**: Komenda "posortuj". Pozwala ułożyć wyniki:
     * Domyślnie (A-Z, 1-100): Wystarczy napisać **ORDER BY** kolumna.
     * Odwrotnie (Z-A, 100-1): Należy dopisać DESC na końcu, np. **ORDER BY** cena **DESC**$
@@ -74,7 +82,7 @@
 
 ### 3. Usuwanie
 
-`DELETE FROM NazwaTabeli WHERE id = 1;`
+`DELETE FROM NazwaTabeli WHERE id = 1;` (W DELETE nie używamy gwiazdki (*)!!)
 
 ### 4. Wyświetlanie (Raport)
 
