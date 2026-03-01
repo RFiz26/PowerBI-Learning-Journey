@@ -94,3 +94,29 @@
 ### 5. Przebudowa (Nowa cecha, np. kolor)
 
 `ALTER TABLE NazwaTabeli ADD nazwa_kolumny typ_danych;`
+
+## 5. Agregacje: SQL kalkulator:
+
+ * **COUNT()** – liczy ile jest wierszy
+   
+ Przykład: `SELECT COUNT(*) FROM Produkty;`
+ Jeżeli chce się policzyć tylko unikalne wartości należy użyć zwrotu  `COUNT(DISTINCT kolumna)`
+
+ * **SUM()** – sumuje wartości
+    
+ Przykład: `SELECT SUM(cena * ilosc) FROM Produkty;`
+ 
+ * **AVG()** – wyciąga średnią
+   
+ Przykład: `SELECT AVG(cena) FROM Produkty;`
+
+ * **MIN()/MAX()** – znajduję najmniejszą/największa wartość
+ 
+ Przykład: `SELECT MIN(cena), MAX(cena) FROM Produkty;`
+
+### Agregaty z grupowaniem
+Można stworzyć raport z kategoriami i wynikami obliczeń, np. Jak pokazać całkowitą ilość produktów w zależności od kategori:
+
+`SELECT kategoria, SUM(ilosc)`
+ `FROM Produkty` 
+ `GROUP BY kategoria;`
