@@ -51,7 +51,7 @@
 
     Przykład: `WHERE wiek >= 18`
 
-* **LIKE**: Szukanie danych po nie dokładnej nazwie z wykorztsaniem %
+* **LIKE**: Szukanie danych po nie dokładnej nazwie z wykorzystaniem **%**
     * 'G%'-szuka wszystkich danych w kolumnie zaczynających się na G (Grzebień, garnek itp.)
     * '%ów'-szuka wszystkich danych w kolumnie kończących się na ów (Kraków,Gdów)
     * '%mok%-szuka wszystkich dancyh w kolumnie który zawiera ciag 'mok' (smok,mokradła, domokrązca)
