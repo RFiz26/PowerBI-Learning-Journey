@@ -57,7 +57,7 @@
     * '%mok%-szuka wszystkich dancyh w kolumnie który zawiera ciag 'mok' (smok,mokradła, domokrązca)
 
     Przykład: `WHERE państwo LIKE 'A%'`
-
+ **UWAGA** Wielkość liter nie powinna mieć znaczenia, ale w niektórych systemach (np. PostgreSQL) będzie to miało znaczenie
 
 * **ORDER BY**: Komenda "posortuj". Pozwala ułożyć wyniki:
     * Domyślnie (A-Z, 1-100): Wystarczy napisać **ORDER BY** kolumna.
