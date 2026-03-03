@@ -157,6 +157,12 @@ Jest to połączenie jednostronne. Tabela po lewej (lub prawej) stronie jest bra
 Schemat zapisu:**(...) FROM Tab_1 LEFT JOIN Tab_2 ON Tab_1.id_obcy = Tab_2.id (...)**
 
 Przykład (Szukanie braków):`SELECT Goscie.imie FROM Goscie LEFT JOIN Opinie ON Goscie.id = Opinie.gosc_id WHERE Opinie.id IS NULL;`
-(Powyższe zapytanie znajdzie gości, którzy nie wystawili jeszcze żadnej opinii).
+
+
+## 7. **Podzapytania (Subqueries)**
+ To zapytanie wewnątrz innego zapytania. Najczęściej używamy ich w klauzuli `WHERE`
+Przykładowo chcemy znaleźć nazwy dań, które mają wyższą cene niż średnia cena całego menu:
+
+Przykład: `SELECT nazwa FROM Dania WHERE cena > (SELECT AVG(cena) FROM Dania);`
 
 
