@@ -114,9 +114,16 @@
  
  Przykład: `SELECT MIN(cena), MAX(cena) FROM Produkty;`
 
-### Agregaty z grupowaniem
-Można stworzyć raport z kategoriami i wynikami obliczeń, np. Jak pokazać całkowitą ilość produktów w zależności od kategori:
+### **GROUP BY**-agregaty z grupowaniem
+Można stworzyć raport z kategoriami i wynikami obliczeń, np. Jak pokazać całkowitą ilość produktów w zależności od kategori. :
 
-`SELECT kategoria, SUM(ilosc)`
- `FROM Produkty` 
- `GROUP BY kategoria;`
+Przykład `SELECT kategoria, SUM(ilosc) FROM Produkty GROUP BY kategoria;`
+
+### **HAVING**-warunkowanie agregacji
+Jeżeli chcemy wyświetlić wartości, który wynik agregacji (a nie dane w tabeli) mają spełnić pewne warunki stosuje się funkcji HAVING
+
+Przykład: `SELECT dostawca,SUM(ilosc) FROM Magazyn GROUP BY dostawca HAVING SUM(ilosc)>100`
+
+Przykład 2: `SELECT produkt,SUM(ilosc) FROM Magazyn WHERE dostawca='Warzywex' GROUP BY produkt HAVING SUM(ilosc)>10`
+
+## 6. Łączenie tabel
