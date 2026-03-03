@@ -114,16 +114,49 @@
  
  Przykład: `SELECT MIN(cena), MAX(cena) FROM Produkty;`
 
-### **GROUP BY**-agregaty z grupowaniem
-Można stworzyć raport z kategoriami i wynikami obliczeń, np. Jak pokazać całkowitą ilość produktów w zależności od kategori. :
+### **GROUP BY** – Agregacja z grupowaniem
 
-Przykład `SELECT kategoria, SUM(ilosc) FROM Produkty GROUP BY kategoria;`
+Pozwala na tworzenie raportów z podziałem na kategorie i wynikami obliczeń. Przykład: Jak wyświetlić całkowitą ilość produktów w zależności od kategorii?
+ 
+ Przykład:`SELECT kategoria, SUM(ilosc) FROM Produkty GROUP BY kategoria;`
+ 
+### **HAVING** – Warunkowanie agregacji
+Jeżeli chcemy przefiltrować wyniki, które są efektem agregacji (a nie są surowymi danymi w tabeli), stosujemy klauzulę HAVING.
 
-### **HAVING**-warunkowanie agregacji
-Jeżeli chcemy wyświetlić wartości, który wynik agregacji (a nie dane w tabeli) mają spełnić pewne warunki stosuje się funkcji HAVING
+Przykład 1: `SELECT dostawca, SUM(ilosc) FROM Magazyn GROUP BY dostawca HAVING SUM(ilosc) > 100;`
 
-Przykład: `SELECT dostawca,SUM(ilosc) FROM Magazyn GROUP BY dostawca HAVING SUM(ilosc)>100`
-
-Przykład 2: `SELECT produkt,SUM(ilosc) FROM Magazyn WHERE dostawca='Warzywex' GROUP BY produkt HAVING SUM(ilosc)>10`
+Przykład 2 (Połączenie WHERE i HAVING): `SELECT produkt, SUM(ilosc) FROM Magazyn WHERE dostawca = 'Warzywex' GROUP BY produkt HAVING SUM(ilosc) > 10;`
 
 ## 6. Łączenie tabel
+
+Często baza składa się z wielu tabel, które są ze sobą powiązane za pomocą kluczy. 
+
+Klucze dzielimy na:
+
+  -**Klucz główny (Primary Key – PK)**: Jednoznacznie identyfikuje każdy wiersz w tabeli. Musi być unikalny i nie może być pusty (NULL), np. kolumna id.
+
+  -**Klucz obcy (Foreign Key – FK)**: Kolumna wskazująca na klucz główny w innej tabeli. Tworzy relację między tabelami i zapewnia tzw. integralność referencyjną danych, np. kolumna id_klient.
+  
+  
+  ### **JOIN (...) ON**
+  
+  Służy do łączenia tabel w taki sposób, aby wynikiem była ich część wspólna (tylko dopasowane pary). Schemat zapisu wygląda następująco:
+
+  **(...) FROM Tab_1 JOIN Tab_2 ON Tab_1.id_obcy = Tab_2.id (...)**(Zasada: Najpierw nazwa tabeli, potem nazwa kolumny z ID!)
+
+  Łatwiejsza forma (Aliasy):**(...) FROM Tab_1 t1 JOIN Tab_2 t2 ON t1.id_obcy = t2.id (...)**
+  
+ **Ważne**: Kolejność tabel w INNER JOIN nie ma wpływu na wynik, jednak dla czytelności najlepiej jako pierwszą podać tabelę główną, a później dodatkową.
+           
+Przykład: `SELECT p.nazwisko, d.nazwa_dzialu FROM Pracownicy p JOIN Dzialy d ON p.dzial_id = d.id;`
+
+### LEFT JOIN (lub RIGHT JOIN) (...) ON
+
+Jest to połączenie jednostronne. Tabela po lewej (lub prawej) stronie jest brana w całości, a z drugiej tabeli dołączane są tylko te wiersze, które mają powiązanie z pierwszą. W miejscach, gdzie brakuje dopasowania, w kolumnach pojawi się wartość `NULL`.
+
+Schemat zapisu:**(...) FROM Tab_1 LEFT JOIN Tab_2 ON Tab_1.id_obcy = Tab_2.id (...)**
+
+Przykład (Szukanie braków):`SELECT Goscie.imie FROM Goscie LEFT JOIN Opinie ON Goscie.id = Opinie.gosc_id WHERE Opinie.id IS NULL;`
+(Powyższe zapytanie znajdzie gości, którzy nie wystawili jeszcze żadnej opinii).
+
+
