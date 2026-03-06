@@ -150,6 +150,8 @@ Klucze dzielimy na:
            
 Przykład: `SELECT p.nazwisko, d.nazwa_dzialu FROM Pracownicy p JOIN Dzialy d ON p.dzial_id = d.id;`
 
+Przykład kilkukrotnego łaczenia: `SELECT k.imie, k.nazwisko, z.data_zamowienia, p.nazwa FROM Zamowienia z JOIN Klienci k ON z.id_klienta=k.id JOIN Produkty p ON z.id_produktu=p.id`
+
 ### LEFT JOIN (lub RIGHT JOIN) (...) ON
 
 Jest to połączenie jednostronne. Tabela po lewej (lub prawej) stronie jest brana w całości, a z drugiej tabeli dołączane są tylko te wiersze, które mają powiązanie z pierwszą. W miejscach, gdzie brakuje dopasowania, w kolumnach pojawi się wartość `NULL`.
@@ -165,4 +167,121 @@ Przykładowo chcemy znaleźć nazwy dań, które mają wyższą cene niż średn
 
 Przykład: `SELECT nazwa FROM Dania WHERE cena > (SELECT AVG(cena) FROM Dania);`
 
+## 8. **Tworzenie nowej tabeli podczas wyświetlania -AS**
 
+Jeżeli potrzebujemy wyświetlić jakieś dane w nowej kolumny (np. wyświetlanie iloczyny dwóch kolumn) nie trzeba tworzyć nowej kolumny, wystarczy w zapytaniu SELECT użyć funkcji AS np. do wyliczenia zysku
+
+Schemat zapisu: **SELECT(...) col1*col2 AS Name_new_shown_column (...)**
+
+Przykład :`SELECT nazwa, cena, ilosc, cena*ilosc AS Wartosc_Magazynu FROM Produkty`
+
+## 9. **Limitowanie danych**
+Kiedy chcemy zobaczyc ograniczoną ilość wyświetleń wykorzystuje się funkcje zależne od silnika bazy: 
+ * MySQL / PostgreSQL: **LIMIT 3** (na samym końcu).
+
+ * SQL Server (T-SQL): **SELECT TOP 3 ...**(zaraz po SELECT).
+
+ * Oracle (nowsze wersje): **FETCH FIRST 3 ROWS ONLY**; (na samym końcu)<- bajeczna fraza <3 
+
+ * Oracle (starsze wersje): **WHERE ROWNUM <= 3**.
+
+## 10. Kolumna warunkowa (CASE WHEN)
+Do tworzenia nowej kolumny na podstawie warunków logicznych (odpowiednik funkcjonalności IF w Excelu lub DAX). Pozwala przypisać wartości takie jak Prawda/Fałsz, Dostępny/Wyprzedane czy segmentację wielkości miast.
+
+**Schemat:**
+```sql
+SELECT nazwa, 
+       CASE 
+            WHEN warunek THEN 'wynik1' 
+            ELSE 'wynik2' 
+       END AS nowa_nazwa_kolumny
+FROM Tabela;
+```
+
+Przykład 1: Status dostępności
+```
+SELECT nazwa_produktu, 
+       CASE 
+            WHEN ilosc > 0 THEN 'Dostępny' 
+            ELSE 'Wyprzedane' 
+       END AS Status
+FROM Produkty;
+```
+
+Przykład 2:Wielopoziomowy priorytet zamówień
+```
+SELECT id, wartosc,
+       CASE 
+            WHEN wartosc > 1000 THEN 'VIP'
+            WHEN wartosc > 500 THEN 'Standard'
+            ELSE 'Niski'
+       END AS Priorytet
+FROM Zamowienia;
+```
+
+## 11. CTE (Common Table Expressions)
+Używane, gdy zapytania stają się skomplikowane. Pozwalają podzielić kod na mniejsze, logiczne części poprzez tworzenie "tymczasowych tabel wynikowych", do których można się odwołać później w tym samym zapytaniu. Zaczynamy od słowa kluczowego WITH.
+Przykład: Tania elektronika na literę A
+```
+WITH TaniaElektronika AS (
+    SELECT * FROM Produkty 
+    WHERE kategoria = 'Elektronika' AND cena < 100
+)
+SELECT * FROM TaniaElektronika 
+WHERE nazwa LIKE 'A%';
+```
+
+## 12. Window Functions (Funkcje okna - OVER)
+Pozwalają na wykonywanie obliczeń (np. rankingów, sum bieżących) bez agregowania (zwijania) wierszy. W przeciwieństwie do `GROUP BY`, funkcje okna zachowują wszystkie szczegółowe wiersze, dopisując wynik obliczeń w nowej kolumnie.
+
+Kluczowe słowa:
+
+PARTITION BY – definiuje "okno" (grupę), dla której liczymy funkcję (np. licz osobno dla każdej kategorii).
+
+ORDER BY – określa kolejność, w jakiej funkcja przetwarza wiersze wewnątrz okna.
+
+### 12.1. Najpopularniejsze funkcje okna (Rankingi)
+
+Można sobie wyobrazić, że są trzy produkty o cenie (100,100,200). Oto jak każda funkcja je ponumeruje :
+
+* **ROW_NUMBER()** – Nadaje unikalny numer. Nie obchodzą go remisy. (1,2,3)
+* **RANK()** – Nadaje ten sam numer dla remisów, ale zostawia luki w numeracji.(1,1,3)
+* **DENSE_RANK()** – Nadaje ten sam numer dla remisów, ale nie zostawia luk.(1,1,2)<- przy tworzeniu ID tabeli
+* **SUM()** – Sumuje wartości. Z ORDER BY tworzy sumę kroczącą (100,200,400), bez ORDER BY zostawi całą sumę (400,400,400)
+
+**Przykład porównawczy:**
+```sql
+SELECT nazwa, cena,
+       ROW_NUMBER() OVER(ORDER BY cena DESC) AS RowNum,
+       RANK()       OVER(ORDER BY cena DESC) AS Rnk,
+       DENSE_RANK() OVER(ORDER BY cena DESC) AS DenseRnk
+FROM Produkty;
+
+
+SELECT nazwa, kategoria, cena,
+       RANK() OVER(PARTITION BY kategoria ORDER BY cena DESC) AS Pozycja_w_Kategorii
+FROM Produkty;
+-
+SELECT nazwa, kategoria, cena,
+       ROW_NUMBER() OVER(PARTITION BY kategoria ORDER BY cena) AS Numer_w_Kategorii
+FROM Produkty;
+-
+ * **PARTITION BY** –  licz osobno dla każdej kategorii
+ * **ORDER BY** – mówi, w jakiej kolejności funkcja ma "przechodzić" przez wiersze.
+
+ Przykład połączonych funkcji:
+
+ WITH RaportKlientow AS (
+    SELECT imie, nazwisko, miasto,
+    CASE 
+        WHEN miasto = 'Warszawa' THEN 'Stolica'
+        WHEN miasto = 'Krakow' THEN 'Prawdziwa stolica'
+        ELSE 'Prowincja'
+    END AS Segment
+    FROM Klienci
+)
+SELECT *,
+       ROW_NUMBER() OVER(PARTITION BY Segment ORDER BY nazwisko) AS Numer_w_Kategorii
+FROM RaportKlientow
+ORDER BY nazwisko;
+-
