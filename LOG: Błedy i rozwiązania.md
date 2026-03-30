@@ -84,5 +84,18 @@ Analiza formuły wykazała błąd w odwołaniu do źródła danych.
    
    <img width="399" height="460" alt="image" src="https://github.com/user-attachments/assets/ef86575c-a211-4d4e-932b-d8b427cfab06" />
 
+## [2026-03-30] Nie działająca relacje
+
+**Problem**: Wykresy z podziałem na marki wyświetlały tę samą wartość dla każdego punktu (linia prosta), mimo że dane źródłowe były zróżnicowane, ale przy zastosowaniu innej tabeli połączonej relacją wartości się zmieniał.
+
+**Próba 1**: Stworzenie od nowa relacji 
+   **Rozwiązanie:** Usunięcie i stworzenie nowych relacji, gdzie został ustawiony kierunek filtrowania na Pojedynczy (od wymiaru "1" do faktów "*") lub Oba. 
+
+   **Rezultat** Problem nadal występował – wykresy nie reagowały na filtrowanie.
+
+**Próba 2**: Aktywacja relacji
+   **Rozwiązanie:** Zaobserwowałam, że nie jest zaznaczona opcja "Aktywuj tę relację", więc została włączona
+   <img width="529" height="854" alt="image" src="https://github.com/user-attachments/assets/a8665702-c513-4ee0-b1ec-f4ac9591590e" />
 
 
+   **Rezultat** Problem przestał występować
